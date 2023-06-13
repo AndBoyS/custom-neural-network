@@ -58,7 +58,7 @@ class ActivationLayer(Module):
         return self.activation(x)
 
     def backward(self, dEdY: np.ndarray, learning_rate: float) -> np.ndarray:
-        return self.activation_prime(self.last_input) * dEdY
+        return self.activation_prime(self.last_input).mean(axis=0) * dEdY
 
 
 class ReLU(ActivationLayer):
@@ -67,6 +67,14 @@ class ReLU(ActivationLayer):
 
     def activation_prime(self, x: np.ndarray) -> np.ndarray:
         return (x > 0).astype(float)
+
+
+class Tanh(ActivationLayer):
+    def activation(self, x: np.ndarray) -> np.ndarray:
+        return np.tanh(x)
+
+    def activation_prime(self, x: np.ndarray) -> np.ndarray:
+        return 1 - np.tanh(x)**2
 
 
 class Linear(Module):
@@ -86,7 +94,7 @@ class Linear(Module):
 
         # Gradients
         dEdX = dEdY @ self.weights.T
-        dEdW = self.last_input.T @ dEdY
+        dEdW = self.last_input.T.mean(axis=-1)[..., None] @ dEdY[None, ...]
         dEdB = dEdY
 
         # Weights update

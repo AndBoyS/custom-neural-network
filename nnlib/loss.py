@@ -62,7 +62,7 @@ class Loss(Module):
             loss: np.ndarray,
             learning_rate: float,
             ) -> np.ndarray:
-        return self.loss_func_prime(*self.last_input) * loss
+        return self.loss_func_prime(*self.last_input).mean(axis=0) * loss
 
 
 class MseLoss(Loss):

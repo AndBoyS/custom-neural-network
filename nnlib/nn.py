@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 
 from nnlib.loss import Loss
@@ -9,7 +7,7 @@ from nnlib.module import Module
 class Sequential:
     def __init__(
             self,
-            layers: List[Module],
+            *layers: Module,
             loss: Loss,
             learning_rate: float,
             ):
